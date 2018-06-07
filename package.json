@@ -4,9 +4,31 @@
   "description": "Scrape and visualize grade statistics",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "./node_modules/.bin/webpack --config webpack.config.js",
+    "dev": "./node_modules/.bin/webpack-dev-server --config webpack.config.js"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.9.1",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.11.1",
+    "webpack-cli": "^3.0.3",
+    "webpack-dev-server": "^3.1.4"
   }
 }
