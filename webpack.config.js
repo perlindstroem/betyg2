@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './components/index.jsx',
+  entry: ['babel-polyfill', './components/index.jsx'],
   mode: 'development',
   output: {
     path: `${__dirname}/dist`,
@@ -13,8 +13,17 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
-      { test: /\.jsx$/, exclude: /node_modules/, loader: 'babel-loader' },
+      { test: /\.js$/, exclude: /node_modules/, use: 'babel-loader' },
+      { test: /\.jsx$/, exclude: /node_modules/, use: 'babel-loader' },
+      {
+        test: /\.css$/,
+        include: /node_modules/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+        ],
+      },
+      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, use: ['url-loader'] },
     ],
   },
   plugins: [
