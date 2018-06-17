@@ -60,7 +60,7 @@ export default class AppHeader extends Component {
         <Header as="h1" style={{ fontSize: '4.5em', marginTop: 20 }}>betyg2</Header>
         <Header as="h3">enkel betygstatistik</Header>
         <Search
-          size="huge"
+          size="big"
           loading={isLoading}
           onResultSelect={this.handleResultSelect}
           onSearchChange={this.handleSearchChange}

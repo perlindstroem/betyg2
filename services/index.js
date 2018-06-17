@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const rp = require('request-promise');
 const fs = require('fs');
 
-function parseHtml(html) {
+export function parseHtml(html) {
   const $ = cheerio.load(html);
   const data = [];
 
@@ -12,7 +12,7 @@ function parseHtml(html) {
 
     if (containsStats) {
       const entry = {
-        grades: [],
+        grades: {},
       };
       const lines = tr.split('\n');
       lines.forEach((line) => {
@@ -29,10 +29,13 @@ function parseHtml(html) {
 
         // pair of grade and count
         if (text.length === 2) {
-          entry.grades.push({
+          const grade = text[0];
+          const count = text[1];
+          entry.grades[grade] = count;
+          /* entry.grades.push({
             grade: text[0],
             count: text[1],
-          });
+          }); */
         }
       });
 
@@ -44,12 +47,18 @@ function parseHtml(html) {
   return data;
 }
 
-// let course = 'TSKS06'
-// rp('http://www4.student.liu.se/tentaresult/?kurskod='+course+'&provkod=&datum=&kursnamn=&sort=0&search=S%F6k').then(parseHtml);
+export function getLocalCourse(course) {
+  const html = fs.readFileSync(`./${course}.html`, 'utf-8');
+  return parseHtml(html);
+}
+
+export async function getRemoveCourse(course) {
+  const html = await rp(`http://www4.student.liu.se/tentaresult/?kurskod=${course}&provkod=&datum=&kursnamn=&sort=0&search=S%F6k`);
+  return parseHtml(html);
+}
 
 
-const html = fs.readFileSync('./TSKS06.html', 'utf-8');
-const data = parseHtml(html);
+/*
 
 const sum = data.reduce((acc, exam) => {
   exam.grades.forEach((entry) => {
@@ -59,3 +68,4 @@ const sum = data.reduce((acc, exam) => {
 }, {});
 
 console.log(sum);
+*/

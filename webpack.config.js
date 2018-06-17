@@ -15,6 +15,7 @@ module.exports = {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, use: 'babel-loader' },
       { test: /\.jsx$/, exclude: /node_modules/, use: 'babel-loader' },
+      { test: /\.html$/, exclude: /node_modules/, use: 'html-loader' },
       {
         test: /\.css$/,
         include: /node_modules/,
@@ -35,4 +36,10 @@ module.exports = {
     hot: true,
   },
   devtool: 'inline-source-map',
+  node: {
+    console: true,
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  },
 };
