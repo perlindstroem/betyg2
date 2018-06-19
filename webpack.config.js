@@ -28,7 +28,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({ title: 'betyg2', template: './components/index.html' }),
+    new HtmlWebpackPlugin({ template: './components/index.html' }),
     new webpack.HotModuleReplacementPlugin(),
   ],
   devServer: {
