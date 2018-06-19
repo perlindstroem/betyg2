@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ResponsiveContainer, BarChart, AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Button } from 'semantic-ui-react';
-import _ from 'lowdash';
 
 import { parseHtml } from '../services';
 import asd from '../services/TATA41.html';
