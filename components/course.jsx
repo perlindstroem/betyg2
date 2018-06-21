@@ -23,7 +23,14 @@ export default class Course extends Component {
   }
 
   componentDidMount() {
-    const rawData = parseHtml(asd);
+    const rawData = parseHtml(asd).sort((a, b) => {
+      const dateA = Date.parse(a.date);
+      const dateB = Date.parse(b.date);
+
+      if (dateA > dateB) { return 1; }
+      if (dateB > dateA) { return -1; }
+      return 0;
+    });
 
     const countData = rawData
       .map(exam => ({
@@ -33,20 +40,11 @@ export default class Course extends Component {
         3: exam.grades[3],
         4: exam.grades[4],
         5: exam.grades[5],
-      }))
-      .sort((a, b) => {
-        const dateA = Date.parse(a.date);
-        const dateB = Date.parse(b.date);
+      }));
 
-        if (dateA > dateB) { return 1; }
-        if (dateB > dateA) { return -1; }
-        return 0;
-      });
 
     const percentageData = rawData.map((exam) => {
       const sum = Object.values(exam.grades).reduce((a, b) => Number.parseInt(a, 10) + Number.parseInt(b, 10), 0) / 100;
-      // console.log('sum', sum);
-      // const sum = _.sum(_.values(exam.grades));
 
       return {
         name: exam.course,
