@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ResponsiveContainer, BarChart, AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { ResponsiveContainer, BarChart, AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
 import { Button } from 'semantic-ui-react';
 
 import { parseHtml } from '../services';
@@ -57,11 +57,49 @@ export default class Course extends Component {
       };
     });
 
+    const totalGrades = rawData
+      .reduce((total, entry) => ({
+        U: total.U + (Number.parseInt(entry.grades.U, 10) || 0),
+        3: total[3] + (Number.parseInt(entry.grades[3], 10) || 0),
+        4: total[4] + (Number.parseInt(entry.grades[4], 10) || 0),
+        5: total[5] + (Number.parseInt(entry.grades[5], 10) || 0),
+      }), {
+        U: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      });
+
+    const totalData = Object.entries(totalGrades)
+      .map(([key, value]) => ({
+        name: key,
+        value,
+      }))
+      .sort((a, b) => {
+        if (a.name === 'U') {
+          console.log('a is U');
+          return -1;
+        }
+        if (b.name === 'U') {
+          console.log('b is U');
+          return 1;
+        }
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
+
     console.log(percentageData);
+    console.log(totalData);
 
     this.setState({
       countData,
       percentageData,
+      totalData,
     });
   }
 
@@ -132,6 +170,7 @@ export default class Course extends Component {
   render() {
     console.log(this.state.showCount);
     const data = this.state.showCount ? this.state.countData : this.state.percentageData;
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
     return (
       <div>
@@ -168,6 +207,16 @@ export default class Course extends Component {
         </div>
         { this.state.showBarChart && this.renderBarChart(data) }
         { this.state.showAreaChart && this.renderAreaChart(data) }
+
+        <PieChart width={300} height={300}>
+          <Tooltip />
+          <Legend />
+          <Pie data={this.state.totalData} nameKey="name" dataKey="value" innerRadius={60} outerRadius={110} fill="#82ca9d">
+            {
+              (this.state.totalData || []).map((entry, index) => <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />)
+            }
+          </Pie>
+        </PieChart>
       </div>
     );
   }
