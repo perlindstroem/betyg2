@@ -12,7 +12,7 @@ export function parseHtml(html) {
 
     if (containsStats) {
       const entry = {
-        grades: {},
+        grades: [],
       };
       const lines = tr.split('\n');
       lines.forEach((line) => {
@@ -29,13 +29,12 @@ export function parseHtml(html) {
 
         // pair of grade and count
         if (text.length === 2) {
-          const grade = text[0];
-          const count = text[1];
-          entry.grades[grade] = count;
-          /* entry.grades.push({
-            grade: text[0],
-            count: text[1],
-          }); */
+          const [grade, count] = text;
+
+          entry.grades.push({
+            grade,
+            count: Number.parseInt(count, 10),
+          });
         }
       });
 
@@ -56,16 +55,3 @@ export async function getRemoveCourse(course) {
   const html = await rp(`http://www4.student.liu.se/tentaresult/?kurskod=${course}&provkod=&datum=&kursnamn=&sort=0&search=S%F6k`);
   return parseHtml(html);
 }
-
-
-/*
-
-const sum = data.reduce((acc, exam) => {
-  exam.grades.forEach((entry) => {
-    acc[entry.grade] = (acc[entry.grade] || 0) + Number.parseInt(entry.count, 10);
-  });
-  return acc;
-}, {});
-
-console.log(sum);
-*/

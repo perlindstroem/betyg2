@@ -8,6 +8,8 @@ import PieChart from './charts/pieChart';
 import { parseHtml } from '../services';
 import asd from '../services/TATA41.html';
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
 export default class Course extends Component {
   constructor(props) {
     super(props);
@@ -18,8 +20,8 @@ export default class Course extends Component {
   }
 
   state = {
-    countData: [],
-    percentageData: [],
+    data: [],
+    labels: [],
     showBarChart: true,
     showAreaChart: false,
     showCount: true,
@@ -35,74 +37,30 @@ export default class Course extends Component {
       return 0;
     });
 
-    const countData = rawData
-      .map(exam => ({
-        name: exam.course,
-        date: exam.date,
-        U: exam.grades.U,
-        3: exam.grades[3],
-        4: exam.grades[4],
-        5: exam.grades[5],
+    const data = rawData.map((exam) => {
+      const sum = exam.grades.map(grade => grade.count).reduce((a, b) => a + b, 0) / 100;
+      const grades = exam.grades.map(grade => ({
+        grade: grade.grade,
+        count: grade.count,
+        percentage: grade.count / sum,
       }));
-
-
-    const percentageData = rawData.map((exam) => {
-      const sum = Object.values(exam.grades).reduce((a, b) => Number.parseInt(a, 10) + Number.parseInt(b, 10), 0) / 100;
 
       return {
         name: exam.course,
         date: exam.date,
         sum,
-        U: (exam.grades.U / sum) || 0,
-        3: (exam.grades[3] / sum) || 0,
-        4: (exam.grades[4] / sum) || 0,
-        5: (exam.grades[5] / sum) || 0,
+        grades,
       };
     });
 
-    const totalGrades = rawData
-      .reduce((total, entry) => ({
-        U: total.U + (Number.parseInt(entry.grades.U, 10) || 0),
-        3: total[3] + (Number.parseInt(entry.grades[3], 10) || 0),
-        4: total[4] + (Number.parseInt(entry.grades[4], 10) || 0),
-        5: total[5] + (Number.parseInt(entry.grades[5], 10) || 0),
-      }), {
-        U: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-      });
-
-    const totalData = Object.entries(totalGrades)
-      .map(([key, value]) => ({
-        name: key,
-        value,
-      }))
-      .sort((a, b) => {
-        if (a.name === 'U') {
-          console.log('a is U');
-          return -1;
-        }
-        if (b.name === 'U') {
-          console.log('b is U');
-          return 1;
-        }
-        if (a.name < b.name) {
-          return -1;
-        }
-        if (a.name > b.name) {
-          return 1;
-        }
-        return 0;
-      });
-
-    console.log(percentageData);
-    console.log(totalData);
+    const labels = Array.from((data || []).reduce((set, entry) => {
+      entry.grades.map(grade => grade.grade).forEach((label) => { set.add(label); });
+      return set;
+    }, new Set()));
 
     this.setState({
-      countData,
-      percentageData,
-      totalData,
+      data,
+      labels,
     });
   }
 
@@ -127,7 +85,25 @@ export default class Course extends Component {
   }
 
   render() {
-    const data = this.state.showCount ? this.state.countData : this.state.percentageData;
+    const data = this.state.data.map((entry) => {
+      const grades = entry.grades.reduce((map, grade) => {
+        map[grade.grade] = this.state.showCount ? grade.count : grade.percentage;
+        return map;
+      }, {});
+
+      const { date, name } = entry;
+
+      return Object.assign({
+        date, name,
+      }, grades);
+    });
+
+    const summed = this.state.data.reduce((list, entry) => {
+      entry.grades.forEach((grade) => {
+        (list.find(elem => elem.grade === grade.grade)).count += grade.count;
+      });
+      return list;
+    }, this.state.labels.map(label => ({ grade: label, count: 0 })));
 
     return (
       <div>
@@ -162,9 +138,9 @@ export default class Course extends Component {
           Procent
           </Button>
         </div>
-        { this.state.showBarChart && <BarChart data={data} /> }
-        { this.state.showAreaChart && <AreaChart data={data} />}
-        <PieChart data={this.state.totalData} />
+        { this.state.showBarChart && <BarChart data={data} colors={COLORS} labels={this.state.labels} /> }
+        { this.state.showAreaChart && <AreaChart data={data} colors={COLORS} labels={this.state.labels} />}
+        { <PieChart data={summed} colors={COLORS} /> }
       </div>
     );
   }

@@ -2,7 +2,8 @@ import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import PropTypes from 'prop-types';
 
-const CourseBarChart = ({ data }) => (
+/* eslint-disable react/forbid-prop-types */
+const CourseBarChart = ({ data, labels, colors }) => (
   <ResponsiveContainer height={350} width="100%">
     <BarChart
       width={1000}
@@ -16,16 +17,17 @@ const CourseBarChart = ({ data }) => (
       <YAxis />
       <Tooltip />
       <Legend />
-      <Bar dataKey="U" stackId="a" stroke="#0088FE" fill="#0088FE" />
-      <Bar dataKey="3" stackId="a" stroke="#00C49F" fill="#00C49F" />
-      <Bar dataKey="4" stackId="a" stroke="#FFBB28" fill="#FFBB28" />
-      <Bar dataKey="5" stackId="a" stroke="#FF8042" fill="#FF8042" />
+      {
+          (labels || []).map((label, index) => <Bar key={label} dataKey={label} stackId="a" stroke={colors[index]} fill={colors[index]} />)
+        }
     </BarChart>
   </ResponsiveContainer>
 );
 
 CourseBarChart.propTypes = {
-  data: PropTypes.any.isRequired,
+  data: PropTypes.array.isRequired,
+  labels: PropTypes.array.isRequired,
+  colors: PropTypes.array.isRequired,
 };
 
 export default CourseBarChart;

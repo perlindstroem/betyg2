@@ -2,7 +2,8 @@ import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import PropTypes from 'prop-types';
 
-const CourseAreaChart = ({ data }) => (
+/* eslint-disable react/forbid-prop-types, no-param-reassign */
+const CourseAreaChart = ({ data, colors, labels }) => (
   <ResponsiveContainer height={350} width="100%">
     <AreaChart
       width={1000}
@@ -16,16 +17,17 @@ const CourseAreaChart = ({ data }) => (
       <YAxis />
       <Tooltip />
       <Legend />
-      <Area dataKey="U" stackId="a" stroke="#0088FE" fill="#0088FE" />
-      <Area dataKey="3" stackId="a" stroke="#00C49F" fill="#00C49F" />
-      <Area dataKey="4" stackId="a" stroke="#FFBB28" fill="#FFBB28" />
-      <Area dataKey="5" stackId="a" stroke="#FF8042" fill="#FF8042" />
+      {
+        (labels || []).map((label, index) => <Area key={label} dataKey={label} stackId="a" stroke={colors[index]} fill={colors[index]} />)
+      }
     </AreaChart>
   </ResponsiveContainer>
 );
 
 CourseAreaChart.propTypes = {
-  data: PropTypes.any.isRequired,
+  data: PropTypes.array.isRequired,
+  labels: PropTypes.array.isRequired,
+  colors: PropTypes.array.isRequired,
 };
 
 export default CourseAreaChart;
