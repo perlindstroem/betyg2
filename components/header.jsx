@@ -59,7 +59,7 @@ export default class AppHeader extends Component {
       <Segment inverted vertical textAlign="center" style={{ padding: '1em' }}>
         <Header as="h1" style={{ fontSize: '4.5em', marginTop: 20 }}>betyg2</Header>
         <Header as="h3">enkel betygstatistik</Header>
-        <Search
+        {/* <Search
           size="big"
           loading={isLoading}
           onResultSelect={this.handleResultSelect}
@@ -67,7 +67,7 @@ export default class AppHeader extends Component {
           results={results}
           value={value}
           {...this.props}
-        />
+        /> */}
       </Segment>
     );
   }
