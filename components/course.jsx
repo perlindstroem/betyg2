@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { ResponsiveContainer, BarChart, AreaChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
 import { Button } from 'semantic-ui-react';
+
+import BarChart from './charts/barChart';
+import AreaChart from './charts/areaChart';
+import PieChart from './charts/pieChart';
 
 import { parseHtml } from '../services';
 import asd from '../services/TATA41.html';
@@ -123,54 +126,8 @@ export default class Course extends Component {
     });
   }
 
-  renderAreaChart = data => (
-    <ResponsiveContainer height={350} width="100%">
-      <AreaChart
-        width={1000}
-        data={data}
-        margin={{
-          top: 20, right: 30, left: 20, bottom: 5,
-          }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Area dataKey="U" stackId="a" stroke="#0088FE" fill="#0088FE" />
-        <Area dataKey="3" stackId="a" stroke="#00C49F" fill="#00C49F" />
-        <Area dataKey="4" stackId="a" stroke="#FFBB28" fill="#FFBB28" />
-        <Area dataKey="5" stackId="a" stroke="#FF8042" fill="#FF8042" />
-      </AreaChart>
-    </ResponsiveContainer>
-  )
-
-  renderBarChart = data => (
-    <ResponsiveContainer height={350} width="100%">
-      <BarChart
-        width={1000}
-        data={data}
-        margin={{
-          top: 20, right: 30, left: 20, bottom: 5,
-          }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="U" stackId="a" stroke="#0088FE" fill="#0088FE" />
-        <Bar dataKey="3" stackId="a" stroke="#00C49F" fill="#00C49F" />
-        <Bar dataKey="4" stackId="a" stroke="#FFBB28" fill="#FFBB28" />
-        <Bar dataKey="5" stackId="a" stroke="#FF8042" fill="#FF8042" />
-      </BarChart>
-    </ResponsiveContainer>
-  )
-
   render() {
-    console.log(this.state.showCount);
     const data = this.state.showCount ? this.state.countData : this.state.percentageData;
-    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
     return (
       <div>
@@ -205,18 +162,9 @@ export default class Course extends Component {
           Procent
           </Button>
         </div>
-        { this.state.showBarChart && this.renderBarChart(data) }
-        { this.state.showAreaChart && this.renderAreaChart(data) }
-
-        <PieChart width={300} height={300}>
-          <Tooltip />
-          <Legend />
-          <Pie data={this.state.totalData} nameKey="name" dataKey="value" innerRadius={60} outerRadius={110} fill="#82ca9d">
-            {
-              (this.state.totalData || []).map((entry, index) => <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />)
-            }
-          </Pie>
-        </PieChart>
+        { this.state.showBarChart && <BarChart data={data} /> }
+        { this.state.showAreaChart && <AreaChart data={data} />}
+        <PieChart data={this.state.totalData} />
       </div>
     );
   }
