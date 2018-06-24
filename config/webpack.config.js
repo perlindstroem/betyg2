@@ -36,8 +36,12 @@ module.exports = (env, argv) => ({
     new webpack.HotModuleReplacementPlugin(),
   ],
   devServer: {
+    port: 3000,
     contentBase: outputPath,
     hot: true,
+    proxy: {
+      '/api': 'http://localhost:8080/',
+    },
   },
   devtool: env.production ? '' : 'inline-source-map',
   node: {

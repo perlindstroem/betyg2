@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
+import rp from 'request-promise';
 
 import BarChart from './charts/barChart';
 import AreaChart from './charts/areaChart';
 import PieChart from './charts/pieChart';
-
-import { parseHtml } from '../services';
-import asd from '../services/TATA41.html';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -27,17 +25,19 @@ export default class Course extends Component {
     showCount: true,
   }
 
-  componentDidMount() {
-    const rawData = parseHtml(asd).sort((a, b) => {
-      const dateA = Date.parse(a.date);
-      const dateB = Date.parse(b.date);
+  async componentDidMount() {
+    const courseData = await rp(`${window.location.href}api/course/TATA42`);
+    const sortedData = JSON.parse(courseData)
+      .sort((a, b) => {
+        const dateA = Date.parse(a.date);
+        const dateB = Date.parse(b.date);
 
-      if (dateA > dateB) { return 1; }
-      if (dateB > dateA) { return -1; }
-      return 0;
-    });
+        if (dateA > dateB) { return 1; }
+        if (dateB > dateA) { return -1; }
+        return 0;
+      });
 
-    const data = rawData.map((exam) => {
+    const data = sortedData.map((exam) => {
       const sum = exam.grades.map(grade => grade.count).reduce((a, b) => a + b, 0) / 100;
       const grades = exam.grades.map(grade => ({
         grade: grade.grade,
