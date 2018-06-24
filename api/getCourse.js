@@ -1,8 +1,10 @@
 const cheerio = require('cheerio');
 const rp = require('request-promise');
 const fs = require('fs');
+const cache = require('memory-cache');
 
-export function parseHtml(html) {
+/* eslint-disable prefer-destructuring, no-unused-vars */
+function parseHtml(html) {
   const $ = cheerio.load(html);
   const data = [];
 
@@ -17,7 +19,6 @@ export function parseHtml(html) {
       const lines = tr.split('\n');
       lines.forEach((line) => {
         const text = $(line).text().split(' ');
-
 
         // should be the header
         if (text.length > 3) {
@@ -37,21 +38,45 @@ export function parseHtml(html) {
           });
         }
       });
-
-      // console.log(JSON.stringify(entry, null, 4));
       data.push(entry);
     }
   });
-  // console.log(JSON.stringify(data, null, 4));
   return data;
 }
 
-export function getLocalCourse(course) {
-  const html = fs.readFileSync(`./${course}.html`, 'utf-8');
-  return parseHtml(html);
+function getLocalCourse(course) {
+  const html = fs.readFileSync(`./samples/${course}.html`, 'utf-8');
+  return html;
 }
 
-export async function getRemoveCourse(course) {
+async function getRemoteCourse(course) {
   const html = await rp(`http://www4.student.liu.se/tentaresult/?kurskod=${course}&provkod=&datum=&kursnamn=&sort=0&search=S%F6k`);
-  return parseHtml(html);
+  return html;
 }
+
+/**
+ * Will check in cache for the requested course.
+ * If not in cache, get from LiU course page, parse and save.
+ * @param {*} req Requires req.param = courseCode.
+ * @param {*} res Responds with JSON formatted data.
+ */
+async function getCourse(req, res) {
+  const { courseCode } = req.params;
+
+  const cached = cache.get(courseCode);
+
+  if (cached) {
+    console.log('got from cache');
+    res.send(cached);
+  } else {
+    console.log('getting from internetz');
+    const html = await getRemoteCourse(courseCode);
+    const data = parseHtml(html);
+    cache.put(courseCode, data, 86400000);
+    res.send(data);
+  }
+}
+
+module.exports = {
+  getCourse,
+};

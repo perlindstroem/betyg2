@@ -5,15 +5,17 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "prod": "./node_modules/.bin/webpack --env.production --progress --config config/webpack.config.js",
-    "dev": "./node_modules/.bin/webpack-dev-server --progress --config config/webpack.config.js"
+    "dev": "./node_modules/.bin/webpack-dev-server --env.development --progress --config config/webpack.config.js"
   },
   "dependencies": {
     "chart.js": "2.7.2",
     "cheerio": "1.0.0-rc.2",
     "express": "4.16.3",
     "faker": "4.1.0",
+    "memory-cache": "0.2.0",
+    "nodemon": "1.17.5",
     "prop-types": "15.6.2",
     "react": "16.4.1",
     "react-dom": "16.4.1",
