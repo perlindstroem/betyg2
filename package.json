@@ -5,14 +5,16 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "./node_modules/.bin/webpack --config webpack.config.js",
-    "dev": "./node_modules/.bin/webpack-dev-server --config webpack.config.js"
+    "start": "node server.js",
+    "prod": "./node_modules/.bin/webpack --env.production --progress --config config/webpack.config.js",
+    "dev": "./node_modules/.bin/webpack-dev-server --progress --config config/webpack.config.js"
   },
   "dependencies": {
     "chart.js": "2.7.2",
     "cheerio": "1.0.0-rc.2",
+    "express": "4.16.3",
     "faker": "4.1.0",
-    "prop-types": "^15.6.2",
+    "prop-types": "15.6.2",
     "react": "16.4.1",
     "react-dom": "16.4.1",
     "react-hot-loader": "4.3.3",
