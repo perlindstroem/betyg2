@@ -33,7 +33,7 @@ function parseHtml(html) {
           const [grade, count] = text;
 
           entry.grades.push({
-            grade,
+            grade: grade === '1' ? 'U' : grade,
             count: Number.parseInt(count, 10),
           });
         }
@@ -63,16 +63,18 @@ async function getRemoteCourse(course) {
 async function getCourse(req, res) {
   const { courseCode } = req.params;
 
+  console.log('getting course', courseCode);
+
   const cached = cache.get(courseCode);
 
   if (cached) {
     console.log('got from cache');
     res.send(cached);
   } else {
-    console.log('getting from internetz');
     const html = await getRemoteCourse(courseCode);
     const data = parseHtml(html);
     cache.put(courseCode, data, 86400000);
+    console.log('got from internetz');
     res.send(data);
   }
 }

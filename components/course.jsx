@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button } from 'semantic-ui-react';
-import rp from 'request-promise';
+import { Button, Header } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 import BarChart from './charts/barChart';
 import AreaChart from './charts/areaChart';
@@ -9,6 +9,17 @@ import PieChart from './charts/pieChart';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 export default class Course extends Component {
+  static propTypes = {
+    data: PropTypes.array,
+    labels: PropTypes.array,
+    courseCode: PropTypes.string.isRequired,
+  }
+
+  static defaultProps = {
+    data: [],
+    labels: [],
+  }
+
   constructor(props) {
     super(props);
 
@@ -18,50 +29,9 @@ export default class Course extends Component {
   }
 
   state = {
-    data: [],
-    labels: [],
     showBarChart: true,
     showAreaChart: false,
     showCount: true,
-  }
-
-  async componentDidMount() {
-    const courseData = await rp(`${window.location.href}api/course/TATA42`);
-    const sortedData = JSON.parse(courseData)
-      .sort((a, b) => {
-        const dateA = Date.parse(a.date);
-        const dateB = Date.parse(b.date);
-
-        if (dateA > dateB) { return 1; }
-        if (dateB > dateA) { return -1; }
-        return 0;
-      });
-
-    const data = sortedData.map((exam) => {
-      const sum = exam.grades.map(grade => grade.count).reduce((a, b) => a + b, 0) / 100;
-      const grades = exam.grades.map(grade => ({
-        grade: grade.grade,
-        count: grade.count,
-        percentage: grade.count / sum,
-      }));
-
-      return {
-        name: exam.course,
-        date: exam.date,
-        sum,
-        grades,
-      };
-    });
-
-    const labels = Array.from((data || []).reduce((set, entry) => {
-      entry.grades.map(grade => grade.grade).forEach((label) => { set.add(label); });
-      return set;
-    }, new Set()));
-
-    this.setState({
-      data,
-      labels,
-    });
   }
 
   toggleAreaChart() {
@@ -85,7 +55,7 @@ export default class Course extends Component {
   }
 
   render() {
-    const data = this.state.data.map((entry) => {
+    const data = this.props.data.map((entry) => {
       const grades = entry.grades.reduce((map, grade) => {
         map[grade.grade] = this.state.showCount ? grade.count : grade.percentage;
         return map;
@@ -98,15 +68,18 @@ export default class Course extends Component {
       }, grades);
     });
 
-    const summed = this.state.data.reduce((list, entry) => {
+    const summed = this.props.data.reduce((list, entry) => {
       entry.grades.forEach((grade) => {
         (list.find(elem => elem.grade === grade.grade)).count += grade.count;
       });
       return list;
-    }, this.state.labels.map(label => ({ grade: label, count: 0 })));
+    }, this.props.labels.map(label => ({ grade: label, count: 0 })));
 
     return (
-      <div>
+      <div style={{ width: '100%' }}>
+        <Header as="h2">
+          { (this.props.courseCode).toUpperCase() }
+        </Header>
         <div>
           <Button
             attached="left"
@@ -138,8 +111,8 @@ export default class Course extends Component {
           Procent
           </Button>
         </div>
-        { this.state.showBarChart && <BarChart data={data} colors={COLORS} labels={this.state.labels} /> }
-        { this.state.showAreaChart && <AreaChart data={data} colors={COLORS} labels={this.state.labels} />}
+        { this.state.showBarChart && <BarChart data={data} colors={COLORS} labels={this.props.labels} /> }
+        { this.state.showAreaChart && <AreaChart data={data} colors={COLORS} labels={this.props.labels} />}
         { <PieChart data={summed} colors={COLORS} /> }
       </div>
     );
