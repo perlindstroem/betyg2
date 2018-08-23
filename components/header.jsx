@@ -14,8 +14,7 @@ export default class AppHeader extends Component {
   render() {
     return (
       <Segment inverted vertical textAlign="center" style={{ padding: '1em' }}>
-        <Header as="h1" style={{ fontSize: '4.5em', marginTop: 20, cursor: 'pointer' }} onClick={this.props.goHome}>betyg2</Header>
-        <Header as="h3">enkel betygstatistik</Header>
+        <Header as="h1" style={{ fontSize: '4.5em', marginTop: 20, cursor: 'pointer' }} onClick={this.props.goHome}>liubetyg</Header>
         <Search search={this.props.search} />
       </Segment>
     );

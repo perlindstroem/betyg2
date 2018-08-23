@@ -16,6 +16,7 @@ class App extends Component {
   }
 
   state = {
+    loading: false,
     displayCourse: false,
     data: [],
     labels: [],
@@ -23,6 +24,11 @@ class App extends Component {
   }
 
   async search(courseCode) {
+    this.setState({
+      loading: true,
+      displayCourse: false,
+    });
+
     const courseData = await rp(`${window.location.href}api/course/${courseCode}`);
 
     const sortedData = JSON.parse(courseData)
@@ -57,17 +63,24 @@ class App extends Component {
       return set;
     }, new Set()));
 
-    this.setState({
-      displayCourse: true,
-      data,
-      labels,
-      courseCode,
-    });
+    const callback = () => {
+      this.setState({
+        loading: false,
+        displayCourse: true,
+        data,
+        labels,
+        courseCode,
+      });
+    };
+
+    // up the number for testing purposes
+    setTimeout(callback, 0);
   }
 
   showFrontpage() {
     this.setState({
       displayCourse: false,
+      loading: false,
     });
   }
 
@@ -77,9 +90,16 @@ class App extends Component {
         <Header search={this.search} goHome={this.showFrontpage} />
         <Grid container centered style={{ paddingTop: 30 }}>
           {
-            this.state.displayCourse ?
-              <Course data={this.state.data} labels={this.state.labels} courseCode={this.state.courseCode} /> :
-              <Frontpage />
+            this.state.displayCourse &&
+            <Course
+              data={this.state.data}
+              labels={this.state.labels}
+              courseCode={this.state.courseCode}
+            />
+          }
+          {
+            !this.state.displayCourse &&
+            <Frontpage loading={this.state.loading} />
           }
         </Grid>
       </div>
