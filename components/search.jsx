@@ -19,7 +19,7 @@ export default class Search extends Component {
 
   updateValue(e, { value }) {
     this.setState({
-      value,
+      value: value.toUpperCase(),
     });
   }
 
