@@ -36,7 +36,7 @@ module.exports = (env, argv) => ({
     new webpack.HotModuleReplacementPlugin(),
   ],
   devServer: {
-    port: 3000,
+    port: 3010,
     contentBase: outputPath,
     hot: true,
     proxy: {
