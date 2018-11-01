@@ -12,6 +12,7 @@
   "dependencies": {
     "chart.js": "2.7.2",
     "cheerio": "1.0.0-rc.2",
+    "clean-webpack-plugin": "^0.1.19",
     "express": "4.16.3",
     "faker": "4.1.0",
     "memory-cache": "0.2.0",

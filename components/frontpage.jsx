@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Segment, Header, Icon } from 'semantic-ui-react';
+import { Segment, Header, Icon, Button } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
 /* eslint-disable react/prefer-stateless-function */
@@ -13,6 +13,16 @@ export default class Frontpage extends Component {
         <Header as="h2"><Icon name="hand spock" />Kul att du hittat hit!</Header>
         <p>Här kan du hitta visualisering av kursstatistik från Linköpings Universitet. För att komma igång; skriv in en kurskod i sökfältet och.. äh, du förstår nog hur man ska göra, det är inte jättesvårt. Kör bara kör!</p>
         <p>Sidans funktionalitet är kanske något begränsad, fler features kommer när tid, ork och motivation finnes. För önskemål, skicka mail!</p>
+        <p>Vill du bidra eller är nyfiken på koden?
+          <Button
+            as="a"
+            href="https://github.com/perlindstroem/betyg2"
+            style={{ marginLeft: 10 }}
+            basic
+            icon="github alternate"
+            content="Gå till Github"
+          />
+        </p>
         <p>All inspiration för sidan kommer från <em>betygen.se</em>. RIP.</p>
         <Header as="h2"><Icon name="mail" />Kontakt</Header>
         <p>Hittat en bug? Vill du diskutera betygsfördelningen på flervariabeln över en kaffe?</p>

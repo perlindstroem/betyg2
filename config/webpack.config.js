@@ -1,8 +1,10 @@
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
 
 const outputPath = path.join(__dirname, '../dist');
+const rootPath = path.resolve(__dirname, '../');
 const templatePath = path.join(__dirname, '../components/index.html');
 
 module.exports = (env, argv) => ({
@@ -10,7 +12,7 @@ module.exports = (env, argv) => ({
   mode: env.production ? 'production' : 'development',
   output: {
     path: outputPath,
-    filename: 'bundle.js',
+    filename: '[name].[hash].js',
   },
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -32,6 +34,7 @@ module.exports = (env, argv) => ({
     ],
   },
   plugins: [
+    new CleanWebpackPlugin(['dist'], { root: rootPath }),
     new HtmlWebpackPlugin({ template: templatePath }),
     new webpack.HotModuleReplacementPlugin(),
   ],
